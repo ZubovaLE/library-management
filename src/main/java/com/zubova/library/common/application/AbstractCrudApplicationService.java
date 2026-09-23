@@ -25,7 +25,7 @@ public abstract class AbstractCrudApplicationService<E extends BaseEntity, C, D>
     @Override
     @Transactional(readOnly = true)
     public D getById(Long id) {
-        return dtoMapper.toDto(getEntityById(id));
+        return dtoMapper.toDto(crudService.getById(id));
     }
 
     @Override
@@ -39,7 +39,7 @@ public abstract class AbstractCrudApplicationService<E extends BaseEntity, C, D>
     @Override
     @Transactional
     public D update(Long id, C request) {
-        E entity = getEntityById(id);
+        E entity = crudService.getById(id);
 
         updateEntity(request, entity);
 
@@ -50,10 +50,6 @@ public abstract class AbstractCrudApplicationService<E extends BaseEntity, C, D>
     @Transactional
     public void delete(Long id) {
         crudService.delete(id);
-    }
-
-    protected E getEntityById(Long id) {
-        return crudService.getById(id);
     }
 
     protected abstract E createEntity(C request);
