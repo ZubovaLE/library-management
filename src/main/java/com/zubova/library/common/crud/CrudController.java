@@ -1,18 +1,20 @@
 package com.zubova.library.common.crud;
 
 import com.zubova.library.common.application.CrudApplicationService;
+import com.zubova.library.common.response.PageResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 public abstract class CrudController<C, D> {
@@ -24,8 +26,12 @@ public abstract class CrudController<C, D> {
             responseCode = "200",
             description = "Resources retrieved"
     )
-    public List<D> getAll() {
-        return crudApplicationService.getAll();
+    public PageResponse<D> getAll(@PageableDefault(
+            size = 20,
+            sort = "id",
+            direction = Sort.Direction.ASC
+    ) Pageable pageable) {
+        return PageResponse.from(crudApplicationService.getAll(pageable));
     }
 
     @GetMapping("/{id}")

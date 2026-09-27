@@ -1,10 +1,11 @@
 package com.zubova.library.common.crud;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface CrudService<E> {
 
-    List<E> getAll();
+    Page<E> getAll(Pageable pageable);
 
     E getById(Long id);
 

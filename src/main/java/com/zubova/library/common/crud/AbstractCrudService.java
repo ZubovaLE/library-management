@@ -3,9 +3,9 @@ package com.zubova.library.common.crud;
 import com.zubova.library.common.persistence.BaseEntity;
 import com.zubova.library.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 public abstract class AbstractCrudService<E extends BaseEntity, R extends JpaRepository<E, Long>>
@@ -14,8 +14,8 @@ public abstract class AbstractCrudService<E extends BaseEntity, R extends JpaRep
     protected final R repository;
 
     @Override
-    public List<E> getAll() {
-        return repository.findAll();
+    public Page<E> getAll(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
     @Override

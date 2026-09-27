@@ -3,11 +3,10 @@ package com.zubova.library.common.application;
 import com.zubova.library.common.crud.CrudService;
 import com.zubova.library.common.mapping.BaseDtoMapper;
 import com.zubova.library.common.persistence.BaseEntity;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 public abstract class AbstractCrudApplicationService<E extends BaseEntity, C, D>
@@ -18,8 +17,9 @@ public abstract class AbstractCrudApplicationService<E extends BaseEntity, C, D>
 
     @Override
     @Transactional(readOnly = true)
-    public List<D> getAll() {
-        return dtoMapper.toDtos(crudService.getAll());
+    public Page<D> getAll(Pageable pageable) {
+        return crudService.getAll(pageable)
+                .map(dtoMapper::toDto);
     }
 
     @Override
