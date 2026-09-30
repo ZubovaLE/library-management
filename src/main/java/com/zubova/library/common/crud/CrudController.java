@@ -1,5 +1,6 @@
 package com.zubova.library.common.crud;
 
+import com.zubova.library.common.aop.TrackExecutionTime;
 import com.zubova.library.common.application.CrudApplicationService;
 import com.zubova.library.common.response.PageResponse;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,6 +27,7 @@ public abstract class CrudController<C, D> {
             responseCode = "200",
             description = "Resources retrieved"
     )
+    @TrackExecutionTime
     public PageResponse<D> getAll(@PageableDefault(
             size = 20,
             sort = "id",
