@@ -37,6 +37,7 @@ public record BookRequestDto(
                 example = "2008"
         )
         @NotNull
+        @Positive
         Integer publicationYear,
 
         @Schema(

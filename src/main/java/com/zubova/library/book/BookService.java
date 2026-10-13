@@ -29,7 +29,7 @@ public class BookService extends AbstractCrudApplicationService<Book, BookReques
         Author author = authorCrudService.getById(request.authorId());
 
         Book book = bookMapper.toEntity(request, author);
-        book.setAvailableCopies(book.getTotalCopies());
+        book.initializeCopies(request.totalCopies());
 
         return book;
     }
@@ -40,13 +40,8 @@ public class BookService extends AbstractCrudApplicationService<Book, BookReques
 
         Author author = authorCrudService.getById(request.authorId());
 
-        int borrowedCopies = book.getTotalCopies() - book.getAvailableCopies();
-
-        validateTotalCopies(request.totalCopies(), borrowedCopies);
-
+        book.changeTotalCopies(request.totalCopies());
         bookMapper.updateEntity(request, author, book);
-
-        book.setAvailableCopies(book.getTotalCopies() - borrowedCopies);
     }
 
     private void validateIsbnAvailableForCreate(String isbn) {
@@ -58,12 +53,6 @@ public class BookService extends AbstractCrudApplicationService<Book, BookReques
     private void validateIsbnAvailableForUpdate(String isbn, Long bookId) {
         if (bookCrudService.existsByIsbnAndIdNot(isbn, bookId)) {
             throw new ResourceConflictException("Book with ISBN %s already exists".formatted(isbn));
-        }
-    }
-
-    private void validateTotalCopies(int totalCopies, int borrowedCopies) {
-        if (totalCopies < borrowedCopies) {
-            throw new ResourceConflictException("Total copies cannot be less than borrowed copies");
         }
     }
 

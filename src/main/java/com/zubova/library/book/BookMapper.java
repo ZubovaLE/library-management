@@ -16,10 +16,14 @@ import org.mapstruct.MappingTarget;
 )
 public interface BookMapper extends BaseDtoMapper<Book, BookDto> {
 
+    @Mapping(target = "totalCopies", ignore = true)
     @Mapping(target = "availableCopies", ignore = true)
+    @Mapping(target = "version", ignore = true)
     Book toEntity(BookRequestDto requestDto, Author author);
 
+    @Mapping(target = "totalCopies", ignore = true)
     @Mapping(target = "availableCopies", ignore = true)
+    @Mapping(target = "version", ignore = true)
     void updateEntity(BookRequestDto requestDto, Author author, @MappingTarget Book book);
 
 }
