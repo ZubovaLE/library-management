@@ -1,5 +1,6 @@
 package com.zubova.library.exception;
 
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.validation.FieldError;
@@ -32,6 +33,23 @@ public class ApplicationExceptionHandler {
                         (first, second) -> first
                 ));
         problem.setProperty("errors", errors);
+        return problem;
+    }
+
+    @ExceptionHandler(InvalidLoanRequestException.class)
+    ProblemDetail invalidLoanRequest(InvalidLoanRequestException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
+        problem.setTitle("Invalid loan request");
+        return problem;
+    }
+
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    ProblemDetail optimisticLockConflict(OptimisticLockingFailureException ex) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT,
+                "The resource was changed by another request. Reload it and try again."
+        );
+        problem.setTitle("Concurrent modification");
         return problem;
     }
 
