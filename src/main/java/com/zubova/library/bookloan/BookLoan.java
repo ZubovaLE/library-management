@@ -12,7 +12,7 @@ import lombok.Setter;
 import java.time.Instant;
 
 @Entity
-@Table(name = "bookLoans")
+@Table(name = "book_loans")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

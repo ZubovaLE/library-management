@@ -1,0 +1,188 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: zubovale
+      changes:
+        - createTable:
+            tableName: authors
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: middle_name
+                  type: varchar(100)
+  - changeSet:
+      id: 2
+      author: zubovale
+      changes:
+        - createTable:
+            tableName: books
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: version
+                  type: BIGINT
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: author_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    references: authors(id)
+                    foreignKeyName: fk_books_author
+              - column:
+                  name: isbn
+                  type: varchar(13)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: publication_year
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total_copies
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: available_copies
+                  type: int
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 3
+      author: zubovale
+      changes:
+        - createTable:
+            tableName: readers
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone
+                  type: varchar(16)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: registration_date
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 4
+      author: zubovale
+      changes:
+        - createTable:
+            tableName: book_loans
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: version
+                  type: BIGINT
+              - column:
+                  name: book_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    references: books(id)
+                    foreignKeyName: fk_book_loans_book
+              - column:
+                  name: reader_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    references: readers(id)
+                    foreignKeyName: fk_book_loans_reader
+              - column:
+                  name: loan_date
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+              - column:
+                  name: due_date
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: false
+              - column:
+                  name: return_date
+                  type: timestamp with time zone
+              - column:
+                  name: status
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 5
+      author: zubovale
+      changes:
+        - sql:
+            splitStatements: true
+            sql: |
+              ALTER TABLE books
+                  ADD CONSTRAINT chk_books_total_copies
+                  CHECK (total_copies >= 0);
+              ALTER TABLE books
+                  ADD CONSTRAINT chk_books_available_copies
+                  CHECK (available_copies >= 0);
+              ALTER TABLE books
+                  ADD CONSTRAINT chk_books_available_not_exceed_total
+                  CHECK (available_copies <= total_copies);
+      rollback:
+          - sql:
+              sql: |
+                ALTER TABLE books DROP CONSTRAINT chk_books_total_copies;
+                ALTER TABLE books DROP CONSTRAINT chk_books_available_copies;
+                ALTER TABLE books DROP CONSTRAINT chk_books_available_not_exceed_total;

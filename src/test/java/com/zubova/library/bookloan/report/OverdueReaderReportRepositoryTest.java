@@ -76,8 +76,7 @@ class OverdueReaderReportRepositoryTest {
         registry.add("spring.datasource.url", postgres::getJdbcUrl);
         registry.add("spring.datasource.username", postgres::getUsername);
         registry.add("spring.datasource.password", postgres::getPassword);
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
-        registry.add("spring.liquibase.enabled", () -> "false");
+        registry.add("spring.jpa.hibernate.ddl-auto", () -> "validate");
     }
 
     @BeforeEach
@@ -102,7 +101,8 @@ class OverdueReaderReportRepositoryTest {
         createBookLoan(bookIdOne, readerIdTwo, NOW.plus(2, ChronoUnit.DAYS));
         createBookLoan(bookIdTwo, readerIdTwo, NOW.plus(1, ChronoUnit.DAYS));
 
-        List<OverdueReaderReportDto> overdueReaders = overdueReaderReportRepository.findOverdueReaders(NOW.plus(4, ChronoUnit.DAYS));
+        List<OverdueReaderReportDto> overdueReaders =
+                overdueReaderReportRepository.findOverdueReaders(NOW.plus(4, ChronoUnit.DAYS));
 
         assertEquals(2, overdueReaders.size());
 
