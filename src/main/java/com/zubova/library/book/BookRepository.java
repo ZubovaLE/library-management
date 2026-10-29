@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
 public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificationExecutor<Book> {
 
@@ -16,6 +17,9 @@ public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificat
     @Override
     @EntityGraph(attributePaths = "author")
     Page<Book> findAll(Specification<Book> spec, Pageable pageable);
+
+    @Query("SELECT COALESCE(SUM(b.totalCopies), 0) FROM Book b")
+    Long countAllCopies();
 
     boolean existsByIsbn(String isbn);
 

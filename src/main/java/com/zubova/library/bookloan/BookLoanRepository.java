@@ -15,4 +15,6 @@ public interface BookLoanRepository extends JpaRepository<BookLoan, Long> {
     @EntityGraph(attributePaths = {"book", "book.author", "reader"})
     Page<BookLoan> findAllByDueDateBeforeAndStatus(Instant now, BookLoanStatus status, Pageable pageable);
 
+    long countByStatus(BookLoanStatus status);
+
 }
